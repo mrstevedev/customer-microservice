@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id                      String            @unique
+  firstName               String
+  middleName              String
+  lastName                String
+  dateOfBirth             String
+  gender                  String
+  county                  String
+  fixedAddress            Boolean
+  assistanceWithInsurance Boolean
+  familyPlanningBenefits  Boolean
+  OtherContactInfo        OtherContactInfo?
+}
+
+model OtherContactInfo {
+  email                  String          @unique
+  preferredContactMethod String
+  preferredLanguage      String
+  userId                 String          @unique
+  alternatePhone         AlternatePhone?
+  customer               Customer        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phone                  Phone?
+}
+
+model Phone {
+  areaCode         String
+  preFix           String
+  lineNumber       String
+  phoneType        String
+  userId           String           @unique
+  otherContactInfo OtherContactInfo @relation(fields: [userId], references: [userId], onDelete: Cascade)
+}
+
+model AlternatePhone {
+  areaCode         String
+  preFix           String
+  lineNumber       String
+  phoneType        String
+  userId           String           @unique
+  otherContactInfo OtherContactInfo @relation(fields: [userId], references: [userId], onDelete: Cascade)
+}
+
+model User {
+  id           String
+  username     String @unique
+  password     String
+  refreshtoken String @unique
+}
